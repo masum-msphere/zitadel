@@ -16,7 +16,7 @@ import { ManagementService } from 'src/app/services/mgmt.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { LanguagesService } from '../../../../services/languages.service';
 import { NameDialogComponent } from 'src/app/modules/name-dialog/name-dialog.component';
-import { MemberCreateDialogComponent } from 'src/app/modules/add-member-dialog/member-create-dialog.component';
+import { GroupMemberCreateDialogComponent } from 'src/app/modules/add-group-member-dialog/group-member-create-dialog.component';
 import { GroupMembersDataSource } from './group-members-datasource';
 
 @Component({
@@ -194,7 +194,7 @@ export class GroupDetailComponent implements OnInit {
   }
 
   public openAddMember(): void {
-    const dialogRef = this.dialog.open(MemberCreateDialogComponent, {width: '400px'});
+    const dialogRef = this.dialog.open(GroupMemberCreateDialogComponent, {width: '400px'});
     dialogRef.afterClosed().subscribe((resp) => {
       if (resp) {
         const users: User.AsObject[] = resp.users;

@@ -13,20 +13,15 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CopyToClipboardModule } from 'src/app/directives/copy-to-clipboard/copy-to-clipboard.module';
 import { HasRoleModule } from 'src/app/directives/has-role/has-role.module';
-import { MemberCreateDialogModule } from 'src/app/modules/add-member-dialog/member-create-dialog.module';
+import { GroupMemberCreateDialogModule } from 'src/app/modules/add-group-member-dialog/group-member-create-dialog.module';
 import { CardModule } from 'src/app/modules/card/card.module';
 import { ChangesModule } from 'src/app/modules/changes/changes.module';
 import { DetailLayoutModule } from 'src/app/modules/detail-layout/detail-layout.module';
 import { InfoSectionModule } from 'src/app/modules/info-section/info-section.module';
 import { InputModule } from 'src/app/modules/input/input.module';
-import { MachineKeysModule } from 'src/app/modules/machine-keys/machine-keys.module';
-import { MembershipsTableModule } from 'src/app/modules/memberships-table/memberships-table.module';
 import { MetaLayoutModule } from 'src/app/modules/meta-layout/meta-layout.module';
 import { PaginatorModule } from 'src/app/modules/paginator/paginator.module';
-import { PasswordComplexityViewModule } from 'src/app/modules/password-complexity-view/password-complexity-view.module';
-import { PersonalAccessTokensModule } from 'src/app/modules/personal-access-tokens/personal-access-tokens.module';
 import { RefreshTableModule } from 'src/app/modules/refresh-table/refresh-table.module';
-import { ShowTokenDialogModule } from 'src/app/modules/show-token-dialog/show-token-dialog.module';
 import { SidenavModule } from 'src/app/modules/sidenav/sidenav.module';
 import { TableActionsModule } from 'src/app/modules/table-actions/table-actions.module';
 import { TopViewModule } from 'src/app/modules/top-view/top-view.module';
@@ -58,11 +53,9 @@ import { MembersTableModule } from 'src/app/modules/members-table/members-table.
     InfoDialogModule,
     FormsModule,
     ReactiveFormsModule,
-    MembershipsTableModule,
     WarnDialogModule,
     MatDialogModule,
     QRCodeModule,
-    ShowTokenDialogModule,
     MetaLayoutModule,
     MatCheckboxModule,
     MetadataModule,
@@ -70,7 +63,6 @@ import { MembersTableModule } from 'src/app/modules/members-table/members-table.
     HasRolePipeModule,
     UserGrantsModule,
     MatButtonModule,
-    PersonalAccessTokensModule,
     MatIconModule,
     CardModule,
     MatProgressSpinnerModule,
@@ -86,12 +78,10 @@ import { MembersTableModule } from 'src/app/modules/members-table/members-table.
     CopyToClipboardModule,
     DetailLayoutModule,
     TableActionsModule,
-    PasswordComplexityViewModule,
-    MemberCreateDialogModule,
+    GroupMemberCreateDialogModule,
     TimestampToDatePipeModule,
     LocalizedDatePipeModule,
     InputModule,
-    MachineKeysModule,
     InfoSectionModule,
     MatSelectModule,
     ActionKeysModule,
