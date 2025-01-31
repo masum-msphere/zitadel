@@ -16,7 +16,7 @@ import { HasRoleModule } from 'src/app/directives/has-role/has-role.module';
 import { ActionKeysModule } from 'src/app/modules/action-keys/action-keys.module';
 import { AvatarModule } from 'src/app/modules/avatar/avatar.module';
 import { CardModule } from 'src/app/modules/card/card.module';
-import { FilterUserModule } from 'src/app/modules/filter-user/filter-user.module';
+import { FilterGroupModule } from 'src/app/modules/filter-group/filter-group.module';
 import { InputModule } from 'src/app/modules/input/input.module';
 import { NavToggleModule } from 'src/app/modules/nav-toggle/nav-toggle.module';
 import { PaginatorModule } from 'src/app/modules/paginator/paginator.module';
@@ -48,7 +48,7 @@ import { GroupTableComponent } from './group-table/group-table.component';
     LocalizedDatePipeModule,
     HasRolePipeModule,
     TranslateModule,
-    FilterUserModule,
+    FilterGroupModule,
     RouterModule,
     NavToggleModule,
     RefreshTableModule,

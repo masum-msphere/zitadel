@@ -38,12 +38,12 @@
       </div>
     </button>
   </ng-template>
-  <cnsl-filter-user
+  <cnsl-filter-group
     actions
     *ngIf="!selection.hasValue()"
     (filterChanged)="applySearchQuery($any($event))"
     (filterOpen)="filterOpen = $event"
-  ></cnsl-filter-user>
+  ></cnsl-filter-group>
   <ng-template cnslHasRole [hasRole]="['user.write']" actions>
     <button
       (click)="gotoRouterLink(['/groups/create'])"
