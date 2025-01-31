@@ -61,6 +61,10 @@
         "METADATA": "Add custom attributes to your user like your department. You can use this information in your organizations actions."
       }
     },
+    "GROUPS": {
+      "TITLE": "Groups",
+      "DESCRIPTION": "A list of user groups."
+    },
     "AUTHORIZATIONS": {
       "TITLE": "Authorizations",
       "DESCRIPTION": "Authorizations define the access rights of a user to a project. You can grant a user access to a project and define the users roles within that project."
@@ -408,7 +412,8 @@
     "TOS": "Terms of Service",
     "OPENSHORTCUTSTOOLTIP": "Type ? to show keyboard shortcuts",
     "SETTINGS": "Settings",
-    "CUSTOMERPORTAL": "Customer Portal"
+    "CUSTOMERPORTAL": "Customer Portal",
+    "GROUPS": "Groups"
   },
   "QUICKSTART": {
     "TITLE": "Integrate ZITADEL into your application",
@@ -1032,6 +1037,31 @@
         "DESCRIPTION": "You are about to delete the personal access token. Are you sure?"
       },
       "DELETED": "Token deleted with success."
+    }
+  },
+  "GROUP": {
+    "CREATE": {
+      "TITLE": "Create a New Group",
+      "NAME": "Name",
+      "DESCRIPTION": "Description"
+    },
+    "TOAST": {
+      "CREATED": "Group created successfully.",
+      "DELETED": "Group deleted successfully!",
+      "SELECTEDREACTIVATED": "Selected groups reactivated.",
+      "SELECTEDDEACTIVATED": "Selected groups deactivated.",
+      "REACTIVATED": "Group reactivated.",
+      "DEACTIVATED": "Group deactivated."
+    },
+    "PAGES": {
+      "NOGROUP": "No associated group.",
+      "DELETE": "Delete Group"
+    },
+    "DIALOG": {
+      "DELETE_TITLE": "Delete Group",
+      "DELETE_DESCRIPTION": "You are about to permanently delete a group. Are you sure?",
+      "TYPEUSERNAME": "Type '{{value}}', to confirm and delete the group.",
+      "GROUPNAME": "Groupname"
     }
   },
   "METADATA": {
