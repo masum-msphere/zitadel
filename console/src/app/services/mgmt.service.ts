@@ -47,6 +47,10 @@ import {
   AddGitLabSelfHostedProviderResponse,
   AddGoogleProviderRequest,
   AddGoogleProviderResponse,
+  AddGroupMemberRequest,
+  AddGroupMemberResponse,
+  AddGroupRequest,
+  AddGroupResponse,
   AddHumanUserRequest,
   AddHumanUserResponse,
   AddIDPToLoginPolicyRequest,
@@ -103,6 +107,8 @@ import {
   DeactivateActionResponse,
   DeactivateAppRequest,
   DeactivateAppResponse,
+  DeactivateGroupRequest,
+  DeactivateGroupResponse,
   DeactivateOrgIDPRequest,
   DeactivateOrgIDPResponse,
   DeactivateOrgRequest,
@@ -179,6 +185,8 @@ import {
   GetFlowResponse,
   GetGrantedProjectByIDRequest,
   GetGrantedProjectByIDResponse,
+  GetGroupByIDRequest,
+  GetGroupByIDResponse,
   GetHumanEmailRequest,
   GetHumanEmailResponse,
   GetHumanPhoneRequest,
@@ -241,6 +249,10 @@ import {
   ListGrantedProjectRolesResponse,
   ListGrantedProjectsRequest,
   ListGrantedProjectsResponse,
+  ListGroupMembersRequest,
+  ListGroupMembersResponse,
+  ListGroupsRequest,
+  ListGroupsResponse,
   ListHumanAuthFactorsRequest,
   ListHumanAuthFactorsResponse,
   ListHumanLinkedIDPsRequest,
@@ -300,6 +312,8 @@ import {
   ReactivateActionResponse,
   ReactivateAppRequest,
   ReactivateAppResponse,
+  ReactivateGroupRequest,
+  ReactivateGroupResponse,
   ReactivateOrgIDPRequest,
   ReactivateOrgIDPResponse,
   ReactivateOrgRequest,
@@ -328,6 +342,12 @@ import {
   RemoveCustomLabelPolicyLogoDarkResponse,
   RemoveCustomLabelPolicyLogoRequest,
   RemoveCustomLabelPolicyLogoResponse,
+  RemoveGroupGrantRequest,
+  RemoveGroupGrantResponse,
+  RemoveGroupRequest,
+  RemoveGroupResponse,
+  RemoveGroupMemberRequest,
+  RemoveGroupMemberResponse,
   RemoveHumanAuthFactorOTPEmailRequest,
   RemoveHumanAuthFactorOTPEmailResponse,
   RemoveHumanAuthFactorOTPRequest,
@@ -492,6 +512,8 @@ import {
   UpdateGitLabSelfHostedProviderResponse,
   UpdateGoogleProviderRequest,
   UpdateGoogleProviderResponse,
+  UpdateGroupRequest,
+  UpdateGroupResponse,
   UpdateHumanEmailRequest,
   UpdateHumanEmailResponse,
   UpdateHumanPhoneRequest,
@@ -529,7 +551,7 @@ import {
   UpdateUserNameRequest,
   UpdateUserNameResponse,
   ValidateOrgDomainRequest,
-  ValidateOrgDomainResponse,
+  ValidateOrgDomainResponse
 } from '../proto/generated/zitadel/management_pb';
 import { SearchQuery } from '../proto/generated/zitadel/member_pb';
 import { MetadataQuery } from '../proto/generated/zitadel/metadata_pb';
@@ -545,6 +567,7 @@ import {
   UserFieldName,
   UserGrantQuery,
 } from '../proto/generated/zitadel/user_pb';
+import { Group, GroupState, GroupQuery } from 'src/app/proto/generated/zitadel/group_pb';
 import { GrpcService } from './grpc.service';
 
 export type ResponseMapper<TResp, TMappedResp> = (resp: TResp) => TMappedResp;
@@ -1121,6 +1144,10 @@ export class ManagementService {
     return this.grpcService.mgmt.addHumanUser(req, null).then((resp) => resp.toObject());
   }
 
+  public addGroup(req: AddGroupRequest): Promise<AddGroupResponse.AsObject> {
+    return this.grpcService.mgmt.addGroup(req, null).then((resp) => resp.toObject());
+  }
+
   public addMachineUser(req: AddMachineUserRequest): Promise<AddMachineUserResponse.AsObject> {
     return this.grpcService.mgmt.addMachineUser(req, null).then((resp) => resp.toObject());
   }
@@ -1691,6 +1718,12 @@ export class ManagementService {
     return this.grpcService.mgmt.getUserByID(req, null).then((resp) => resp.toObject());
   }
 
+  public getGroupByID(id: string): Promise<GetGroupByIDResponse.AsObject> {
+    const req = new GetGroupByIDRequest();
+    req.setId(id);
+    return this.grpcService.mgmt.getGroupByID(req, null).then((resp) => resp.toObject());
+  }
+
   public listUserMetadata(
     userId: string,
     offset?: number,
@@ -1784,6 +1817,12 @@ export class ManagementService {
     return this.grpcService.mgmt.removeUser(req, null).then((resp) => resp.toObject());
   }
 
+  public removeGroup(id: string): Promise<RemoveGroupResponse.AsObject> {
+    const req = new RemoveGroupRequest();
+    req.setId(id);
+    return this.grpcService.mgmt.removeGroup(req, null).then((resp) => resp.toObject());
+  }
+
   public removeOrg(): Promise<RemoveOrgResponse.AsObject> {
     const req = new RemoveOrgRequest();
     return this.grpcService.mgmt.removeOrg(req, null).then((resp) => resp.toObject());
@@ -1810,6 +1849,29 @@ export class ManagementService {
     }
     req.setQuery(query);
     return this.grpcService.mgmt.listProjectMembers(req, null).then((resp) => resp.toObject());
+  }
+
+  public listGroupMembers(
+    groupId: string,
+    limit: number,
+    offset: number,
+    queryList?: SearchQuery[],
+  ): Promise<ListGroupMembersResponse.AsObject> {
+    const req = new ListGroupMembersRequest();
+    const query = new ListQuery();
+    req.setQuery(query);
+    req.setGroupId(groupId);
+    if (limit) {
+      query.setLimit(limit);
+    }
+    if (offset) {
+      query.setOffset(offset);
+    }
+    if (queryList) {
+      req.setQueriesList(queryList);
+    }
+    req.setQuery(query);
+    return this.grpcService.mgmt.listGroupMembers(req, null).then((resp) => resp.toObject());
   }
 
   public listUserMemberships(
@@ -1944,6 +2006,12 @@ export class ManagementService {
     return this.grpcService.mgmt.deactivateUser(req, null).then((resp) => resp.toObject());
   }
 
+  public deactivateGroup(id: string): Promise<DeactivateGroupResponse.AsObject> {
+    const req = new DeactivateGroupRequest();
+    req.setId(id);
+    return this.grpcService.mgmt.deactivateGroup(req, null).then((resp) => resp.toObject());
+  }
+
   public addUserGrant(
     userId: string,
     roleNamesList: string[],
@@ -1967,6 +2035,12 @@ export class ManagementService {
     const req = new ReactivateUserRequest();
     req.setId(id);
     return this.grpcService.mgmt.reactivateUser(req, null).then((resp) => resp.toObject());
+  }
+
+  public reactivateGroup(id: string): Promise<ReactivateGroupResponse.AsObject> {
+    const req = new ReactivateGroupRequest();
+    req.setId(id);
+    return this.grpcService.mgmt.reactivateGroup(req, null).then((resp) => resp.toObject());
   }
 
   public addProjectRole(
@@ -2048,6 +2122,26 @@ export class ManagementService {
       req.setQueriesList(queriesList);
     }
     return this.grpcService.mgmt.listUsers(req, null).then((resp) => resp.toObject());
+  }
+
+    public listGroups(
+    limit: number,
+    offset: number,
+    sortingDirection?: SortDirection,
+  ): Promise<ListGroupsResponse.AsObject> {
+    const req = new ListGroupsRequest();
+    const query = new ListQuery();
+    if (limit) {
+      query.setLimit(limit);
+    }
+    if (offset) {
+      query.setOffset(offset);
+    }
+    if (sortingDirection) {
+      query.setAsc(sortingDirection === 'asc');
+    }
+    req.setQuery(query);
+    return this.grpcService.mgmt.listGroups(req, null).then((resp) => resp.toObject());
   }
 
   public getUserByLoginNameGlobal(loginname: string): Promise<GetUserByLoginNameGlobalResponse.AsObject> {
@@ -2362,6 +2456,16 @@ export class ManagementService {
     return this.grpcService.mgmt.addProjectMember(req, null).then((resp) => resp.toObject());
   }
 
+  public addGroupMember(
+    groupId: string,
+    userId: string,
+  ): Promise<AddGroupMemberResponse.AsObject> {
+    const req = new AddGroupMemberRequest();
+    req.setGroupId(groupId);
+    req.setUserId(userId);
+    return this.grpcService.mgmt.addGroupMember(req, null).then((resp) => resp.toObject());
+  }
+
   public updateProjectMember(
     projectId: string,
     userId: string,
@@ -2596,6 +2700,13 @@ export class ManagementService {
     return this.grpcService.mgmt.removeProjectMember(req, null).then((resp) => resp.toObject());
   }
 
+  public removeGroupMember(GroupId: string, userId: string): Promise<RemoveGroupMemberResponse.AsObject> {
+    const req = new RemoveGroupMemberRequest();
+    req.setGroupId(GroupId);
+    req.setUserId(userId);
+    return this.grpcService.mgmt.removeGroupMember(req, null).then((resp) => resp.toObject());
+  }
+
   public listApps(
     projectId: string,
     limit: number,
@@ -2686,6 +2797,13 @@ export class ManagementService {
     req.setName(name);
     req.setProjectId(projectId);
     return this.grpcService.mgmt.updateApp(req, null).then((resp) => resp.toObject());
+  }
+
+  public updateGroup(groupId: string, name: string): Promise<UpdateGroupResponse.AsObject> {
+    const req = new UpdateGroupRequest();
+    req.setId(groupId);
+    req.setName(name);
+    return this.grpcService.mgmt.updateGroup(req, null).then((resp) => resp.toObject());
   }
 
   public updateOrg(name: string): Promise<UpdateOrgResponse.AsObject> {

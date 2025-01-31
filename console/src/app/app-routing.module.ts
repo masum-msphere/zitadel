@@ -55,6 +55,11 @@ const routes: Routes = [
     loadChildren: () => import('src/app/pages/users/users.module'),
   },
   {
+    path: 'groups',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('src/app/pages/groups/groups.module'),
+  },
+  {
     path: 'instance',
     loadChildren: () => import('./pages/instance/instance.module'),
     canActivate: [AuthGuard, RoleGuard],
