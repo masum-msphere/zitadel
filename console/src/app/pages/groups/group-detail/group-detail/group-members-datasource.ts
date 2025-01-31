@@ -27,7 +27,6 @@ export class GroupMembersDataSource extends DataSource<Member.AsObject> {
     groupId: string,
     pageIndex: number,
     pageSize: number,
-    grantId?: string,
   ): void {
     const offset = pageIndex * pageSize;
 

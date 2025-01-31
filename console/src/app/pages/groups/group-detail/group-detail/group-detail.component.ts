@@ -16,7 +16,7 @@ import { ManagementService } from 'src/app/services/mgmt.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { LanguagesService } from '../../../../services/languages.service';
 import { NameDialogComponent } from 'src/app/modules/name-dialog/name-dialog.component';
-import { CreationType, MemberCreateDialogComponent } from 'src/app/modules/add-member-dialog/member-create-dialog.component';
+import { MemberCreateDialogComponent } from 'src/app/modules/add-member-dialog/member-create-dialog.component';
 import { GroupMembersDataSource } from './group-members-datasource';
 
 @Component({
@@ -40,6 +40,8 @@ export class GroupDetailComponent implements OnInit {
 
   public changePageFactory!: Function;
   public dataSource!: GroupMembersDataSource;
+  public groupName: string = '';
+  public INITIALPAGESIZE: number = 25;
 
   constructor(
     public translate: TranslateService,
@@ -60,6 +62,11 @@ export class GroupDetailComponent implements OnInit {
         routerLink: ['/org'],
       }),
     ]);
+
+    this.route.params.subscribe((params) => {
+      this.groupId = params['id'];
+      this.loadMembers();
+    });
 
     const mediaq: string = '(max-width: 500px)';
   }
@@ -213,17 +220,36 @@ export class GroupDetailComponent implements OnInit {
   }
 
   public removeGroupMember(member: Member.AsObject | Member.AsObject): void {
-      this.mgmtGroupService
-        .removeGroupMember((this.group as Group.AsObject).id, member.userId)
-        .then(() => {
-          setTimeout(() => {
-            this.changePage.emit();
-          }, 1000);
-          this.toast.showInfo('PROJECT.TOAST.MEMBERREMOVED', true);
-        })
-        .catch((error) => {
-          this.toast.showError(error);
+    this.mgmtGroupService
+      .removeGroupMember((this.group as Group.AsObject).id, member.userId)
+      .then(() => {
+        setTimeout(() => {
           this.changePage.emit();
-        });
+        }, 1000);
+        this.toast.showInfo('PROJECT.TOAST.MEMBERREMOVED', true);
+      })
+      .catch((error) => {
+        this.toast.showError(error);
+        this.changePage.emit();
+      });
+  }
+
+  public loadMembers(): Promise<any> {
+    return this.mgmtGroupService.getGroupByID(this.groupId).then((resp) => {
+      if (resp.group) {
+        this.group = resp.group;
+        this.groupName = this.group.name;
+        this.dataSource = new GroupMembersDataSource(this.mgmtGroupService);
+        this.dataSource.loadMembers(this.group.id, 0, this.INITIALPAGESIZE);
+
+        this.changePageFactory = (event?: PageEvent) => {
+          return this.dataSource.loadMembers(
+            (this.group as Group.AsObject).id,
+            event?.pageIndex ?? 0,
+            event?.pageSize ?? this.INITIALPAGESIZE,
+          );
+        };
+      }
+    });
   }
 }
