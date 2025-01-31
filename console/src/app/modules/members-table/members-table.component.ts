@@ -14,15 +14,13 @@ import { Type } from 'src/app/proto/generated/zitadel/user_pb';
 import { AddMemberRolesDialogComponent } from '../add-member-roles-dialog/add-member-roles-dialog.component';
 import { PageEvent, PaginatorComponent } from '../paginator/paginator.component';
 import { ProjectMembersDataSource } from '../project-members/project-members-datasource';
-import { GroupMembersDataSource } from 'src/app/pages/groups/group-detail/group-detail/group-members-datasource';
 import { WarnDialogComponent } from '../warn-dialog/warn-dialog.component';
 
 type MemberDatasource =
   | OrgMembersDataSource
   | ProjectMembersDataSource
   | ProjectGrantMembersDataSource
-  | InstanceMembersDataSource
-  | GroupMembersDataSource;
+  | InstanceMembersDataSource;
 
 @Component({
   selector: 'cnsl-members-table',
