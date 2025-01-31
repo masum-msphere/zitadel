@@ -40,8 +40,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { QRCodeModule } from 'angularx-qrcode';
 import { InfoDialogModule } from 'src/app/modules/info-dialog/info-dialog.module';
 import { MetadataModule } from 'src/app/modules/metadata/metadata.module';
+import { ActionKeysModule } from '../../../modules/action-keys/action-keys.module';
 import { InfoRowModule } from '../../../modules/info-row/info-row.module';
 import { GroupDetailComponent } from './group-detail/group-detail.component';
+import { MembersTableModule } from 'src/app/modules/members-table/members-table.module';
+
 
 @NgModule({
   declarations: [
@@ -91,6 +94,8 @@ import { GroupDetailComponent } from './group-detail/group-detail.component';
     MachineKeysModule,
     InfoSectionModule,
     MatSelectModule,
+    ActionKeysModule,
+    MembersTableModule,
   ],
 })
 export class GroupDetailModule {}
