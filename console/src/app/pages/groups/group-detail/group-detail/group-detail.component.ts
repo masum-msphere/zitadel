@@ -10,11 +10,14 @@ import { WarnDialogComponent } from 'src/app/modules/warn-dialog/warn-dialog.com
 import { LoginPolicy } from 'src/app/proto/generated/zitadel/policy_pb';
 import { Group, GroupState } from 'src/app/proto/generated/zitadel/group_pb';
 import { User } from 'src/app/proto/generated/zitadel/user_pb';
+import { Member } from 'src/app/proto/generated/zitadel/member_pb';
 import { Breadcrumb, BreadcrumbService, BreadcrumbType } from 'src/app/services/breadcrumb.service';
 import { ManagementService } from 'src/app/services/mgmt.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { LanguagesService } from '../../../../services/languages.service';
 import { NameDialogComponent } from 'src/app/modules/name-dialog/name-dialog.component';
+import { CreationType, MemberCreateDialogComponent } from 'src/app/modules/add-member-dialog/member-create-dialog.component';
+import { GroupMembersDataSource } from './group-members-datasource';
 
 @Component({
   selector: 'cnsl-group-detail',
@@ -34,6 +37,9 @@ export class GroupDetailComponent implements OnInit {
 
   public error: string = '';
   public loginPolicy?: LoginPolicy.AsObject;
+
+  public changePageFactory!: Function;
+  public dataSource!: GroupMembersDataSource;
 
   constructor(
     public translate: TranslateService,
@@ -178,5 +184,46 @@ export class GroupDetailComponent implements OnInit {
           this.toast.showError(error);
         });
     }
+  }
+
+  public openAddMember(): void {
+    const dialogRef = this.dialog.open(MemberCreateDialogComponent, {width: '400px'});
+    dialogRef.afterClosed().subscribe((resp) => {
+      if (resp) {
+        const users: User.AsObject[] = resp.users;
+        if (users && users.length) {
+          Promise.all(
+            users.map((user) => {
+              return this.mgmtGroupService.addGroupMember((this.group as Group.AsObject).id, user.id);
+            }),
+          )
+            .then(() => {
+              setTimeout(() => {
+                this.changePage.emit();
+              }, 1000);
+              this.toast.showInfo('PROJECT.TOAST.MEMBERSADDED', true);
+            })
+            .catch((error) => {
+              this.changePage.emit();
+              this.toast.showError(error);
+            });
+        }
+      }
+    });
+  }
+
+  public removeGroupMember(member: Member.AsObject | Member.AsObject): void {
+      this.mgmtGroupService
+        .removeGroupMember((this.group as Group.AsObject).id, member.userId)
+        .then(() => {
+          setTimeout(() => {
+            this.changePage.emit();
+          }, 1000);
+          this.toast.showInfo('PROJECT.TOAST.MEMBERREMOVED', true);
+        })
+        .catch((error) => {
+          this.toast.showError(error);
+          this.changePage.emit();
+        });
   }
 }

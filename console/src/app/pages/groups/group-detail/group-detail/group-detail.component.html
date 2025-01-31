@@ -52,6 +52,26 @@
 
       <div class="max-width-container">
         <span *ngIf="!loading && !group">{{ 'GROUP.PAGES.NOUSER' | translate }}</span>
-
+          <cnsl-members-table
+          *ngIf="group"
+          [dataSource]="dataSource"
+          [factoryLoadFunc]="changePageFactory"
+          [refreshTrigger]="changePage"
+          [canWrite]="['project.member.write$'] | hasRole | async"
+          [canDelete]="['project.member.delete$'] | hasRole | async"
+          (deleteMember)="removeGroupMember($event)"
+        >
+          <ng-template
+            cnslHasRole
+            writeactions
+            [hasRole]="['project.member.write']"
+          >
+            <button color="primary" (click)="openAddMember()" class="cnsl-action-button" mat-raised-button>
+              <mat-icon class="icon">add</mat-icon>
+              <span>{{ 'ACTIONS.NEW' | translate }}</span>
+              <cnsl-action-keys (actionTriggered)="openAddMember()"> </cnsl-action-keys>
+            </button>
+          </ng-template>
+        </cnsl-members-table>
       </div>
 </div>
