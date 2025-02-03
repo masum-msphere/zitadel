@@ -48,13 +48,19 @@ export class GroupMembersDataSource extends DataSource<Member.AsObject> {
             if (resp.details?.viewTimestamp) {
               this.viewTimestamp = resp.details.viewTimestamp;
             }
-            return resp.resultList;
+            return resp.resultList.map((member) => {
+              return {
+                ...member,
+                rolesList: [],
+                userResourceOwner: "",
+              };
+            });
           }),
           catchError(() => of([])),
           finalize(() => this.loadingSubject.next(false)),
         )
         .subscribe((members) => {
-          //this.membersSubject.next(members);
+          this.membersSubject.next(members);
         });
     }
   }

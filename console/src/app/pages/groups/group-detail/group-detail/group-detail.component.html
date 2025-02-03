@@ -52,7 +52,7 @@
 
       <div class="max-width-container">
         <span *ngIf="!loading && !group">{{ 'GROUP.PAGES.NOUSER' | translate }}</span>
-          <cnsl-members-table
+          <cnsl-group-members-table
           *ngIf="group"
           [dataSource]="dataSource"
           [factoryLoadFunc]="changePageFactory"
@@ -72,6 +72,6 @@
               <cnsl-action-keys (actionTriggered)="openAddMember()"> </cnsl-action-keys>
             </button>
           </ng-template>
-        </cnsl-members-table>
+        </cnsl-group-members-table>
       </div>
 </div>

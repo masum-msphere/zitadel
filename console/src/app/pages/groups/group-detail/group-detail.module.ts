@@ -38,7 +38,7 @@ import { MetadataModule } from 'src/app/modules/metadata/metadata.module';
 import { ActionKeysModule } from '../../../modules/action-keys/action-keys.module';
 import { InfoRowModule } from '../../../modules/info-row/info-row.module';
 import { GroupDetailComponent } from './group-detail/group-detail.component';
-import { MembersTableModule } from 'src/app/modules/members-table/members-table.module';
+import { GroupMembersTableModule } from 'src/app/modules/group-members-table/group-members-table.module';
 
 
 @NgModule({
@@ -85,7 +85,7 @@ import { MembersTableModule } from 'src/app/modules/members-table/members-table.
     InfoSectionModule,
     MatSelectModule,
     ActionKeysModule,
-    MembersTableModule,
+    GroupMembersTableModule,
   ],
 })
 export class GroupDetailModule {}
