@@ -38,12 +38,12 @@
       </div>
     </button>
   </ng-template>
-  <cnsl-filter-group
+  <!-- <cnsl-filter-group
     actions
     *ngIf="!selection.hasValue()"
     (filterChanged)="applySearchQuery($any($event))"
     (filterOpen)="filterOpen = $event"
-  ></cnsl-filter-group>
+  ></cnsl-filter-group> -->
   <ng-template cnslHasRole [hasRole]="['user.write']" actions>
     <button
       (click)="gotoRouterLink(['/groups/create'])"
@@ -108,7 +108,6 @@
         <th
           mat-header-cell
           *matHeaderCellDef
-          mat-sort-header
         >
           {{ 'GROUP.CREATE.NAME' | translate }}
         </th>
@@ -118,7 +117,7 @@
       </ng-container>
 
       <ng-container matColumnDef="state">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'USER.DATA.STATE' | translate }}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'USER.DATA.STATE' | translate }}</th>
         <td mat-cell *matCellDef="let user" [routerLink]="user.id ? ['/groups', user.id] : null">
           <span
             class="state"
@@ -133,7 +132,7 @@
       </ng-container>
 
       <ng-container matColumnDef="creationDate">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'USER.TABLE.CREATIONDATE' | translate }}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'USER.TABLE.CREATIONDATE' | translate }}</th>
         <td mat-cell *matCellDef="let user" [routerLink]="user.id ? ['/groups', user.id] : null">
           <span class="no-break">{{ user.details.creationDate | timestampToDate | localizedDate: 'regular' }}</span>
         </td>
