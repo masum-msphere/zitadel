@@ -7,6 +7,13 @@ import { ManagementService } from 'src/app/services/mgmt.service';
 
 type GroupGrantAsObject = GroupGrant.AsObject;
 
+export enum GroupGrantContext {
+  NONE = 'none',
+  OWNED_PROJECT = 'owned',
+  GRANTED_PROJECT = 'granted',
+}
+
+
 export class GroupGrantsDataSource extends DataSource<GroupGrantAsObject> {
   public totalResult: number = 0;
   public viewTimestamp!: Timestamp.AsObject;
@@ -20,6 +27,7 @@ export class GroupGrantsDataSource extends DataSource<GroupGrantAsObject> {
   }
 
   public loadGrants(
+    context: GroupGrantContext,
     pageIndex: number,
     pageSize: number,
     data: {
