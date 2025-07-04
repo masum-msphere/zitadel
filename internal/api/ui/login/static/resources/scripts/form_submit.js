@@ -85,3 +85,47 @@ function allRequiredDone(form, inputs) {
   }
   return true;
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorMessage = urlParams.get('error');
+  const successMessage = urlParams.get('success');
+  if (errorMessage) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'lgn-error dialog_content';
+    errorDiv.innerHTML = `
+      <i class="lgn-icon-exclamation-circle-solid lgn-warn"></i>
+      <p class="lgn-error-message">${decodeURIComponent(errorMessage)}</p>
+    `;
+
+    const targetDiv = document.querySelector('.lgn-actions.lgn-reverse-order');
+
+    if (targetDiv) {
+      targetDiv.parentNode.insertBefore(errorDiv, targetDiv);
+    } else {
+      document.body.prepend(errorDiv);
+    }
+
+    urlParams.delete('error');
+    const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    window.history.replaceState({}, document.title, newUrl);
+  }
+
+  if (successMessage) {
+    document.querySelector('.fields').remove();
+    const targetDiv = document.querySelector('.lgn-head');
+    targetDiv.innerHTML = `<h1>Password Set</h1><p>Password successfully set</p>`;
+    const myForm = document.querySelector('form');
+    myForm.action = '/ui/login/login';
+    var button = document.getElementsByClassName("lgn-raised-button")[0];
+    button.removeAttribute("disabled");
+    button.innerHTML = "Next";
+    urlParams.delete('success');
+    const buttons = document.getElementsByClassName('lgn-stroked-button');
+    for (let button of buttons) {
+      button.remove();
+    }
+    const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+    window.history.replaceState({}, document.title, newUrl);
+  }
+});

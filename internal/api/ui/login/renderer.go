@@ -369,6 +369,14 @@ func (l *Login) getUserData(r *http.Request, authReq *domain.AuthRequest, transl
 	return userData
 }
 
+func getCookies(r *http.Request) map[string]string {
+    cookies := make(map[string]string)
+    for _, c := range r.Cookies() {
+        cookies[c.Name] = c.Value
+    }
+    return cookies
+}
+
 func (l *Login) getBaseData(r *http.Request, authReq *domain.AuthRequest, translator *i18n.Translator, titleI18nKey string, descriptionI18nKey string, err error) baseData {
 	title := ""
 	if titleI18nKey != "" {
@@ -404,6 +412,7 @@ func (l *Login) getBaseData(r *http.Request, authReq *domain.AuthRequest, transl
 		AuthReqID:              getRequestID(authReq, r),
 		CSRF:                   csrf.TemplateField(r),
 		Nonce:                  http_mw.GetNonce(r),
+		Cookies:                getCookies(r),
 	}
 	var privacyPolicy *domain.PrivacyPolicy
 	if authReq != nil {
@@ -664,6 +673,7 @@ type baseData struct {
 	IDPProviders           []*domain.IDPProvider
 	LabelPolicy            *domain.LabelPolicy
 	LoginTexts             []*domain.CustomLoginText
+	Cookies					map[string]string
 }
 
 type errorData struct {
