@@ -1,5 +1,16 @@
 {{define "footer"}}
 <footer>
+  {{ if hasWatermark .LabelPolicy }}
+  <span class="watermark">
+    <span class="powered">{{t "Footer.PoweredBy"}}</span>
+    <span
+      class="lgn-logo-watermark"
+      sourcelight="logo-light.svg"
+      sourcedark="logo-dark.svg"
+      alt="logo"
+    ></span>
+  </span>
+  {{end}}
   <span class="fill-space"></span>
   {{ if .TOSLink }}
   <a href="{{.TOSLink}}" rel="noopener noreferrer" target="_blank" alt="TOS"
