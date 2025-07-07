@@ -32,6 +32,7 @@ type initPasswordData struct {
 	profileData
 	Code         string
 	UserID       string
+	Email        string
 	MinLength    uint64
 	HasUppercase string
 	HasLowercase string
@@ -118,11 +119,18 @@ func (l *Login) renderInitPassword(w http.ResponseWriter, r *http.Request, authR
 
 	translator := l.getTranslator(r.Context(), authReq)
 
+	email := ""
+	user, err := l.query.GetUserByID(r.Context(), false, userID)
+	if err == nil && user.Human != nil {
+		email = string(user.Human.Email)
+	}
+
 	data := initPasswordData{
 		baseData:    l.getBaseData(r, authReq, translator, "InitPassword.Title", "InitPassword.Description", err),
 		profileData: l.getProfileData(authReq),
 		UserID:      userID,
 		Code:        code,
+		Email:       email,
 	}
 	policy := l.getPasswordComplexityPolicyByUserID(r, userID)
 	if policy != nil {
