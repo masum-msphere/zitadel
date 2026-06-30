@@ -51,10 +51,11 @@ function isSessionValid(session: Partial<Session>): {
 } {
   const validPassword = session?.factors?.password?.verifiedAt;
   const validPasskey = session?.factors?.webAuthN?.verifiedAt;
+  const validIDP = session?.factors?.intent?.verifiedAt;
   const stillValid = session.expirationDate ? timestampDate(session.expirationDate) > new Date() : true;
 
-  const verifiedAt = validPassword || validPasskey;
-  const valid = !!((validPassword || validPasskey) && stillValid);
+  const verifiedAt = validPassword || validPasskey || validIDP;
+  const valid = !!((validPassword || validPasskey || validIDP) && stillValid);
 
   return { valid, verifiedAt };
 }
@@ -309,7 +310,7 @@ export async function sendPasskey(command: SendPasskeyCommand) {
 
   const humanUser = userResponse.user.type.case === "human" ? userResponse.user.type.value : undefined;
 
-  const emailVerificationCheck = checkEmailVerification(session as any, humanUser, organization, requestId);
+  const emailVerificationCheck = await checkEmailVerification(session as any, humanUser, organization, requestId);
 
   if (emailVerificationCheck?.redirect) {
     return emailVerificationCheck;
