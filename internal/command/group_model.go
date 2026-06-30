@@ -66,8 +66,6 @@ func (g *GroupWriteModel) Reduce() error {
 		case *group.GroupRemovedEvent:
 			g.Name = ""
 			g.Description = ""
-			g.UserIDs = nil
-			g.existingUserIDs = make(map[string]struct{})
 			g.State = domain.GroupStateRemoved
 		}
 	}
