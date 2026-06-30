@@ -41,9 +41,7 @@ export class AuthPasswordlessComponent implements OnInit, OnDestroy {
   public AuthFactorState: any = AuthFactorState;
   public error: string = '';
 
-  // WebAuthn Relying Party ID and login app base URL, resolved from the runtime environment
-  // (falling back to the current host/origin). The RP ID must match the login app's so that
-  // passkeys registered here can be used at login.
+  // WebAuthn Relying Party ID and login app base URL, resolved from the runtime environment.
   private rpId: string = window.location.hostname;
 
   constructor(

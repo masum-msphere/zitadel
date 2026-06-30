@@ -68,9 +68,7 @@ export class DialogPasswordlessComponent {
             const attestationObject = (resp as any).response.attestationObject;
             const clientDataJSON = (resp as any).response.clientDataJSON;
             const rawId = (resp as any).rawId;
-
-            // v2 expects the credential as a structured object (google.protobuf.Struct), not a
-            // base64-encoded JSON string like the old v1 API.
+            
             const publicKeyCredential = {
               id: resp.id,
               rawId: _arrayBufferToBase64(rawId),
