@@ -101,7 +101,7 @@ func (f *file) Stat() (_ fs.FileInfo, err error) {
 	return f, nil
 }
 
-func Start(config Config, externalSecure bool, issuer op.IssuerFromRequest, callDurationInterceptor, instanceHandler func(http.Handler) http.Handler, limitingAccessInterceptor *middleware.AccessInterceptor, customerPortal string) (http.Handler, error) {
+func Start(config Config, externalSecure bool, issuer op.IssuerFromRequest, callDurationInterceptor, instanceHandler func(http.Handler) http.Handler, limitingAccessInterceptor *middleware.AccessInterceptor, customerPortal, loginV2BaseURL string) (http.Handler, error) {
 	fSys, err := fs.Sub(static, "static")
 	if err != nil {
 		return nil, err
@@ -135,7 +135,7 @@ func Start(config Config, externalSecure bool, issuer op.IssuerFromRequest, call
 			return
 		}
 		limited := limitingAccessInterceptor.Limit(w, r)
-		environmentJSON, err := createEnvironmentJSON(url, issuer(r), instance.ManagementConsoleClientID(), customerPortal, instanceMgmtURL, config.PostHog.URL, config.PostHog.Token, config.WebauthnRPID, limited)
+		environmentJSON, err := createEnvironmentJSON(url, issuer(r), instance.ManagementConsoleClientID(), customerPortal, instanceMgmtURL, config.PostHog.URL, config.PostHog.Token, config.WebauthnRPID, loginV2BaseURL, limited)
 		if err != nil {
 			http.Error(w, fmt.Sprintf("unable to marshal env for the management console: %v", err), http.StatusInternalServerError)
 			return
@@ -178,7 +178,7 @@ func csp(posthogURL string) *middleware.CSP {
 	return &csp
 }
 
-func createEnvironmentJSON(api, issuer, clientID, customerPortal, instanceMgmtUrl, postHogURL, postHogToken, webauthnRPID string, exhausted bool) ([]byte, error) {
+func createEnvironmentJSON(api, issuer, clientID, customerPortal, instanceMgmtUrl, postHogURL, postHogToken, webauthnRPID, loginV2BaseURL string, exhausted bool) ([]byte, error) {
 	environment := struct {
 		API                   string `json:"api,omitempty"`
 		Issuer                string `json:"issuer,omitempty"`
@@ -188,6 +188,7 @@ func createEnvironmentJSON(api, issuer, clientID, customerPortal, instanceMgmtUr
 		PostHogURL            string `json:"posthog_url,omitempty"`
 		PostHogToken          string `json:"posthog_token,omitempty"`
 		WebauthnRPID          string `json:"webauthn_rp_id,omitempty"`
+		LoginV2BaseURL        string `json:"login_v2_base_url,omitempty"`
 		Exhausted             bool   `json:"exhausted,omitempty"`
 	}{
 		API:                   api,
@@ -198,6 +199,7 @@ func createEnvironmentJSON(api, issuer, clientID, customerPortal, instanceMgmtUr
 		PostHogURL:            postHogURL,
 		PostHogToken:          postHogToken,
 		WebauthnRPID:          webauthnRPID,
+		LoginV2BaseURL:        loginV2BaseURL,
 		Exhausted:             exhausted,
 	}
 	return json.Marshal(environment)
