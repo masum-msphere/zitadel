@@ -721,7 +721,12 @@ func startAPIs(
 			instanceInterceptor.HandlerFuncWithError,
 			middleware.AuthorizationInterceptor(verifier, config.SystemAuthZ, config.InternalAuthZ).HandlerFuncWithError(schemas.HandlerPrefix)))
 
-	c, err := console.Start(config.Console, config.ExternalSecure, oidcServer.IssuerFromRequest, middleware.CallDurationHandler, instanceInterceptor.Handler, limitingAccessInterceptor, config.CustomerPortal)
+	// Base URL of the v2 login app, taken from DefaultInstance.Features.LoginV2.BaseURI so the
+	loginV2BaseURL := ""
+	if features := config.DefaultInstance.Features; features != nil && features.LoginV2 != nil && features.LoginV2.BaseURI != nil {
+		loginV2BaseURL = features.LoginV2.BaseURI.String()
+	}
+	c, err := console.Start(config.Console, config.ExternalSecure, oidcServer.IssuerFromRequest, middleware.CallDurationHandler, instanceInterceptor.Handler, limitingAccessInterceptor, config.CustomerPortal, loginV2BaseURL)
 	if err != nil {
 		return nil, fmt.Errorf("unable to start management console: %w", err)
 	}

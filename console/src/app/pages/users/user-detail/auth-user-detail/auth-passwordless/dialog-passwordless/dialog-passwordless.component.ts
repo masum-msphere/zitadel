@@ -162,6 +162,7 @@ export class DialogPasswordlessComponent {
           userId,
           code: resp.code.code,
           codeId: resp.code.id,
+          registerPasskey: "true"
         });
 
         this.showQR = true;
