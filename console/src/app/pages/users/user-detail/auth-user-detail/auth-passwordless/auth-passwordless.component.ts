@@ -74,14 +74,8 @@ export class AuthPasswordlessComponent implements OnInit, OnDestroy {
     }
 
     try {
-      // 1. obtain a registration code, 2. start the passkey registration with our RP ID
-      const link = await this.userService.createPasskeyRegistrationLink({
-        userId,
-        medium: { case: 'returnCode', value: {} },
-      });
       const resp = await this.userService.registerPasskey({
         userId,
-        code: link.code,
         domain: this.rpId,
       });
 
