@@ -2240,6 +2240,7 @@ InternalAuthZ:
         - "group.user.read"
         - "group.user.write"
         - "group.user.delete"
+        - "group.delete"
         - "org.member.read"
         - "org.member.write"
         - "project.role.read"
