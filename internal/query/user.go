@@ -647,14 +647,14 @@ func (q *Queries) IsUserUnique(ctx context.Context, username, email, resourceOwn
 	query, scan := prepareUserUniqueQuery()
 	queries := make([]SearchQuery, 0, 3)
 	if username != "" {
-		usernameQuery, err := NewUserUsernameSearchQuery(username, TextEquals)
+		usernameQuery, err := NewUserUsernameSearchQuery(username, TextEqualsIgnoreCase)
 		if err != nil {
 			return false, err
 		}
 		queries = append(queries, usernameQuery)
 	}
 	if email != "" {
-		emailQuery, err := NewUserEmailSearchQuery(email, TextEquals)
+		emailQuery, err := NewUserEmailSearchQuery(email, TextEqualsIgnoreCase)
 		if err != nil {
 			return false, err
 		}
