@@ -13,6 +13,7 @@ import (
 	"github.com/zitadel/zitadel/internal/database"
 	"github.com/zitadel/zitadel/internal/eventstore/handler/v2"
 	"github.com/zitadel/zitadel/internal/query/projection"
+	"github.com/zitadel/zitadel/internal/repository/group"
 	"github.com/zitadel/zitadel/internal/telemetry/tracing"
 	"github.com/zitadel/zitadel/internal/zerrors"
 )
@@ -28,6 +29,8 @@ var oidcUserInfoTriggerHandlers = sync.OnceValue(func() []*handler.Handler {
 		projection.UserGrantProjection,
 		projection.OrgProjection,
 		projection.ProjectProjection,
+		projection.GroupProjection,
+		projection.GroupUsersProjection,
 	}
 })
 
@@ -87,6 +90,8 @@ type OIDCUserInfo struct {
 	Org        *UserInfoOrg        `json:"org,omitempty"`
 	UserGrants []UserGrant         `json:"user_grants,omitempty"`
 	UserGroups []UserInfoUserGroup `json:"user_groups,omitempty"`
+
+	UserGroupsDetails []UserInfoUserGroupDetail `json:"user_groups_details,omitempty"`
 }
 
 type UserInfoOrg struct {
@@ -98,6 +103,14 @@ type UserInfoOrg struct {
 type UserInfoUserGroup struct {
 	ID   string `json:"id,omitempty"`
 	Name string `json:"name,omitempty"`
+}
+
+// UserInfoUserGroupDetail is a superset of UserInfoUserGroup that also carries
+// the per-user attributes of the group membership.
+type UserInfoUserGroupDetail struct {
+	ID         string                             `json:"id,omitempty"`
+	Name       string                             `json:"name,omitempty"`
+	Attributes database.Map[group.AttributeValue] `json:"attributes,omitempty"`
 }
 
 //go:embed userinfo_client_by_id.sql

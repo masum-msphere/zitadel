@@ -26,8 +26,10 @@ var (
 			", projections.users14_humans.avatar_key" +
 			", projections.group_users2.creation_date" +
 			", projections.group_users2.sequence" +
+			", projections.users14.resource_owner" +
 			", COUNT(*) OVER ()" +
 			" FROM projections.group_users2" +
+			" LEFT JOIN projections.users14 ON projections.group_users2.user_id = projections.users14.id AND projections.group_users2.instance_id = projections.users14.instance_id" +
 			" LEFT JOIN projections.users14_humans ON projections.group_users2.user_id = projections.users14_humans.user_id AND projections.group_users2.instance_id = projections.users14_humans.instance_id" +
 			" LEFT JOIN projections.login_names3 ON projections.group_users2.user_id = projections.login_names3.user_id AND projections.group_users2.instance_id = projections.login_names3.instance_id" +
 			" WHERE projections.login_names3.is_primary = $1")
@@ -42,6 +44,7 @@ var (
 		"avatar_key",
 		"creation_date",
 		"sequence",
+		"user_resource_owner",
 		"count",
 	}
 )
@@ -88,6 +91,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 							"avatar-key",
 							testNow,
 							1,
+							"user-resource-owner",
 						},
 					},
 				),
@@ -106,6 +110,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 						PreferredLoginName: "login-name",
 						DisplayName:        "display-name",
 						AvatarUrl:          "avatar-key",
+						UserResourceOwner:  "user-resource-owner",
 					},
 				},
 			},
@@ -128,6 +133,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 							"avatar-key",
 							testNow,
 							1,
+							"user-resource-owner",
 						},
 						{
 							"group-id-1",
@@ -139,6 +145,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 							"avatar-key",
 							testNow,
 							1,
+							"user-resource-owner",
 						},
 					},
 				),
@@ -157,6 +164,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 						PreferredLoginName: "login-name-1",
 						DisplayName:        "display-name-1",
 						AvatarUrl:          "avatar-key",
+						UserResourceOwner:  "user-resource-owner",
 					},
 					{
 						GroupID:            "group-id-1",
@@ -167,6 +175,7 @@ func Test_GroupUsersPrepares(t *testing.T) {
 						PreferredLoginName: "login-name-2",
 						DisplayName:        "display-name-2",
 						AvatarUrl:          "avatar-key",
+						UserResourceOwner:  "user-resource-owner",
 						Attributes:         database.Map[group.AttributeValue]{"role": {"admin"}},
 					},
 				},

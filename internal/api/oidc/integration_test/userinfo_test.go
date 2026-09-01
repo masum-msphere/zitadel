@@ -13,10 +13,12 @@ import (
 	"github.com/zitadel/oidc/v3/pkg/oidc"
 	"golang.org/x/oauth2"
 	"google.golang.org/grpc/metadata"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	oidc_api "github.com/zitadel/zitadel/internal/api/oidc"
 	"github.com/zitadel/zitadel/internal/domain"
 	"github.com/zitadel/zitadel/internal/integration"
+	group_v2 "github.com/zitadel/zitadel/pkg/grpc/group/v2"
 	"github.com/zitadel/zitadel/pkg/grpc/management"
 	oidc_pb "github.com/zitadel/zitadel/pkg/grpc/oidc/v2"
 )
@@ -33,8 +35,13 @@ func TestServer_UserInfo(t *testing.T) {
 	// create user groups
 	group1 := Instance.CreateGroup(CTXIAM, t, Instance.DefaultOrg.GetId(), "group1")
 	group2 := Instance.CreateGroup(CTXIAM, t, Instance.DefaultOrg.GetId(), "group2")
-	// add the user to groups
-	Instance.AddUsersToGroup(CTXIAM, t, group1.GetId(), []string{User.GetUserId()})
+	// add the user to groups, with per-user attributes on the first one only
+	Instance.AddGroupUsersToGroup(CTXIAM, t, group1.GetId(), []*group_v2.AddGroupUser{
+		{
+			UserId:     User.GetUserId(),
+			Attributes: map[string]*structpb.Value{"role": structpb.NewStringValue("admin")},
+		},
+	})
 	Instance.AddUsersToGroup(CTXIAM, t, group2.GetId(), []string{User.GetUserId()})
 
 	tests := []struct {
@@ -189,6 +196,24 @@ func TestServer_UserInfo(t *testing.T) {
 				func(t *testing.T, info *oidc.UserInfo) {
 					expectedUserGroups := []string{"group1", "group2"}
 					userGroupsClaim := info.Claims[oidc_api.ClaimUserGroups]
+					require.Len(t, userGroupsClaim, len(expectedUserGroups))
+					assert.ElementsMatch(t, expectedUserGroups, userGroupsClaim)
+				},
+			},
+		},
+		{
+			name:    "group details scope",
+			prepare: getTokens,
+			scope: []string{oidc.ScopeProfile, oidc.ScopeOpenID, oidc.ScopeEmail, oidc.ScopeOfflineAccess,
+				oidc_api.ScopeUserGroupsDetails},
+			assertions: []func(*testing.T, *oidc.UserInfo){
+				assertUserinfo,
+				func(t *testing.T, info *oidc.UserInfo) {
+					expectedUserGroups := []map[string]interface{}{
+						{"id": group1.GetId(), "name": "group1", "attributes": map[string]interface{}{"role": "admin"}},
+						{"id": group2.GetId(), "name": "group2"},
+					}
+					userGroupsClaim := info.Claims[oidc_api.ClaimUserGroupsDetails]
 					require.Len(t, userGroupsClaim, len(expectedUserGroups))
 					assert.ElementsMatch(t, expectedUserGroups, userGroupsClaim)
 				},

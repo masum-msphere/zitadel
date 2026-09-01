@@ -194,6 +194,8 @@ func userInfoToOIDC(user *query.OIDCUserInfo, userInfoAssertion bool, scope []st
 			setUserInfoCustomUserGroups(user.UserGroups, out)
 		case ScopeUserGroups:
 			setUserInfoUserGroups(user.UserGroups, out)
+		case ScopeUserGroupsDetails:
+			setUserInfoUserGroupsDetails(user.UserGroupsDetails, out)
 		default:
 			if claim, ok := strings.CutPrefix(s, domain.OrgDomainPrimaryScope); ok {
 				out.AppendClaims(domain.OrgDomainPrimaryClaim, claim)
@@ -307,6 +309,13 @@ func setUserInfoUserGroups(userGroups []query.UserInfoUserGroup, out *oidc.UserI
 		groups[i] = userGroup.Name
 	}
 	out.AppendClaims(ClaimUserGroups, groups)
+}
+
+func setUserInfoUserGroupsDetails(userGroups []query.UserInfoUserGroupDetail, out *oidc.UserInfo) {
+	if len(userGroups) == 0 {
+		return
+	}
+	out.AppendClaims(ClaimUserGroupsDetails, userGroups)
 }
 
 //nolint:gocognit

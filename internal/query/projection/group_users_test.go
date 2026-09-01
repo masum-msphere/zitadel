@@ -47,7 +47,7 @@ func Test_GroupUsersReduces(t *testing.T) {
 				executer: &testExecuter{
 					executions: []execution{
 						{
-							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, change_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 							expectedArgs: []interface{}{
 								"agg-id",
 								"user-id-1",
@@ -55,11 +55,12 @@ func Test_GroupUsersReduces(t *testing.T) {
 								"instance-id",
 								uint64(15),
 								anyArg{},
-								database.Map[string](nil),
+								anyArg{},
+								database.Map[group.AttributeValue](nil),
 							},
 						},
 						{
-							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, change_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 							expectedArgs: []interface{}{
 								"agg-id",
 								"user-id-2",
@@ -67,11 +68,12 @@ func Test_GroupUsersReduces(t *testing.T) {
 								"instance-id",
 								uint64(15),
 								anyArg{},
-								database.Map[string]{"role": "admin"},
+								anyArg{},
+								database.Map[group.AttributeValue]{"role": {"admin"}},
 							},
 						},
 						{
-							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+							expectedStmt: "INSERT INTO projections.group_users2 (group_id, user_id, resource_owner, instance_id, sequence, creation_date, change_date, attributes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
 							expectedArgs: []interface{}{
 								"agg-id",
 								"user-id-3",
@@ -79,7 +81,8 @@ func Test_GroupUsersReduces(t *testing.T) {
 								"instance-id",
 								uint64(15),
 								anyArg{},
-								database.Map[string](nil),
+								anyArg{},
+								database.Map[group.AttributeValue](nil),
 							},
 						},
 					},

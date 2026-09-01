@@ -10,8 +10,10 @@ import (
 	"github.com/zitadel/oidc/v3/pkg/oidc"
 	"golang.org/x/text/language"
 
+	"github.com/zitadel/zitadel/internal/database"
 	"github.com/zitadel/zitadel/internal/domain"
 	"github.com/zitadel/zitadel/internal/query"
+	"github.com/zitadel/zitadel/internal/repository/group"
 )
 
 func Test_prepareRoles(t *testing.T) {
@@ -189,6 +191,17 @@ func Test_userInfoToOIDC(t *testing.T) {
 			ID:   "group2-id",
 		},
 	}
+	userGroupsDetails := []query.UserInfoUserGroupDetail{
+		{
+			Name:       "group1",
+			ID:         "group1-id",
+			Attributes: database.Map[group.AttributeValue]{"role": {"admin"}},
+		},
+		{
+			Name: "group2",
+			ID:   "group2-id",
+		},
+	}
 	humanUserInfo := &query.OIDCUserInfo{
 		User: &query.User{
 			ID:                 "human1",
@@ -236,7 +249,8 @@ func Test_userInfoToOIDC(t *testing.T) {
 				UserResourceOwner: "org1",
 			},
 		},
-		UserGroups: userGroups,
+		UserGroups:        userGroups,
+		UserGroupsDetails: userGroupsDetails,
 	}
 	machineUserInfo := &query.OIDCUserInfo{
 		User: &query.User{
@@ -546,6 +560,29 @@ func Test_userInfoToOIDC(t *testing.T) {
 				Subject: "human1",
 				Claims: map[string]any{
 					ClaimUserGroups: []string{"group1", "group2"},
+				},
+			},
+		},
+		{
+			name: "human, scope user groups details, found",
+			args: args{
+				user:  humanUserInfo,
+				scope: []string{ScopeUserGroupsDetails},
+			},
+			want: &oidc.UserInfo{
+				Subject: "human1",
+				Claims: map[string]any{
+					ClaimUserGroupsDetails: []query.UserInfoUserGroupDetail{
+						{
+							Name:       "group1",
+							ID:         "group1-id",
+							Attributes: database.Map[group.AttributeValue]{"role": {"admin"}},
+						},
+						{
+							Name: "group2",
+							ID:   "group2-id",
+						},
+					},
 				},
 			},
 		},

@@ -1413,6 +1413,12 @@ func (i *Instance) AddUsersToGroup(ctx context.Context, t *testing.T, groupID st
 	for idx, id := range userIDs {
 		users[idx] = &group_v2.AddGroupUser{UserId: id}
 	}
+	return i.AddGroupUsersToGroup(ctx, t, groupID, users)
+}
+
+// AddGroupUsersToGroup adds fully specified group users, so that per-user
+// attributes can be set. Use AddUsersToGroup when only the user IDs matter.
+func (i *Instance) AddGroupUsersToGroup(ctx context.Context, t *testing.T, groupID string, users []*group_v2.AddGroupUser) *group_v2.AddUsersToGroupResponse {
 	resp, err := i.Client.GroupV2.AddUsersToGroup(ctx, &group_v2.AddUsersToGroupRequest{
 		Id:    groupID,
 		Users: users,

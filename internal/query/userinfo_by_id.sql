@@ -74,6 +74,18 @@ user_groups as (
         )
         r
 ),
+-- find the user's groups, including the per-user attributes of each membership
+user_groups_details as (
+    select json_agg(row_to_json(r)) as user_groups_details from (
+        select g.id, g.name, gu.attributes
+        from projections.group_users2 as gu
+            left join projections.groups1 as g on gu.group_id = g.id and gu.instance_id = g.instance_id
+        where gu.user_id = $1
+          and gu.instance_id = $2
+          and g.state = 1
+        )
+        r
+),
 -- join user grants to orgs, projects and user
 grants as (
 	select json_agg(row_to_json(r)) as grants from (
@@ -100,5 +112,6 @@ select json_build_object(
 	'org', (select organization from user_org),
 	'metadata', (select metadata from metadata),
 	'user_grants', (select grants from grants),
-    'user_groups', (select user_groups from user_groups)
+    'user_groups', (select user_groups from user_groups),
+    'user_groups_details', (select user_groups_details from user_groups_details)
 );
